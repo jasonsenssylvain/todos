@@ -15,6 +15,8 @@ git.go - tool to interative with git
   * SetupGitPrecommitHook()
   * SetupGitCommitMsgHook()
 
+#### Day 2:
+
 io.go - tool to interative with local code file
 
   * ReadLines()
