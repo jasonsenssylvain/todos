@@ -1,8 +1,15 @@
 package todos
 
 import (
+	"fmt"
 	"os/exec"
+	"path"
 	"strings"
+)
+
+const (
+	TODOS_DIRECTORY        = ".todos/"
+	CLOSED_ISSUES_FILENAME = "closed.tx"
 )
 
 func GitDirectoryRoot() (string, error) {
@@ -49,8 +56,50 @@ func GitBranch() (string, error) {
 	return arr[0], err
 }
 
-// func GitPrecommitHook(dir string) {
-// 	dir = path.Join(dir, ".git/hooks/pre-push")
-// 	bash := "#!/bin/bash"
+func GitPrecommitHook(dir string) {
+	dir = path.Join(dir, ".git/hooks/pre-push")
+	bash := "#!/bin/bash"
+	script := "git diff --name-only origin/master..HEAD | todos work"
 
-// }
+	lines, _ := ReadLines(dir)
+	if len(lines) == 0 {
+		lines = append(lines, bash)
+	}
+
+	exists := false
+	for _, line := range lines {
+		if line == script {
+			exists = true
+			break
+		}
+	}
+
+	if !exists {
+		lines = append(lines, script)
+	}
+}
+
+func GitCommitMessageHook(dir string) {
+	f := path.Join(dir, TODOS_DIRECTORY, CLOSED_ISSUES_FILENAME)
+	script := fmt.Sprintf("cat %s >> \"$1\"; rm -f %s", f, f)
+
+	dir = path.Join(dir, ".git/hooks/commit-msg")
+	bash := "#!/bin/bash"
+
+	lines, _ := ReadLines(dir)
+	if len(lines) == 0 {
+		lines = append(lines, bash)
+	}
+
+	exists := false
+	for _, line := range lines {
+		if line == script {
+			exists = true
+			break
+		}
+	}
+
+	if !exists {
+		lines = append(lines, script)
+	}
+}
