@@ -1,4 +1,4 @@
-package todos
+package main
 
 import (
 	"fmt"

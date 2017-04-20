@@ -1,15 +1,10 @@
-package todos
+package main
 
 import (
 	"fmt"
 	"os/exec"
 	"path"
 	"strings"
-)
-
-const (
-	TODOS_DIRECTORY        = ".todos/"
-	CLOSED_ISSUES_FILENAME = "closed.tx"
 )
 
 func GitDirectoryRoot() (string, error) {
