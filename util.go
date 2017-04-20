@@ -2,7 +2,6 @@ package main
 
 import "reflect"
 
-//TODO: test [Issue: https://github.com/jasoncodingnow/todos/issues/1]
 func Map(f interface{}, vs interface{}) interface{} {
 
 	vf := reflect.ValueOf(f)
