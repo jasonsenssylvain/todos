@@ -40,8 +40,6 @@ func GitOwner() (string, error) {
 }
 
 func GitAdd(add string) error {
-	fmt.Println("add path is " + add)
-	fmt.Println("ssddd")
 	cmd := exec.Command("git", "add", add)
 	_, err := cmd.Output()
 	logOnError(err)

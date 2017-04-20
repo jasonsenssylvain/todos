@@ -162,6 +162,9 @@ func work(root string, files []string) {
 			removed := 0
 
 			fmt.Println("check file: " + relativeFilePath)
+			if relativeFilePath == root {
+				continue
+			}
 
 			lines, err := ReadLines(file)
 			logOnError(err)
@@ -176,7 +179,6 @@ func work(root string, files []string) {
 				todo := todoRegex.FindString(line)
 
 				if ex != "" {
-					fmt.Println("Issue exists")
 					for i, is := range fileIssuesCache {
 						if is != nil && is.Hash == SHA1([]byte(ex)) {
 							cacheChanges = true
@@ -190,8 +192,13 @@ func work(root string, files []string) {
 						branch, _ := GitBranch()
 						filename := path.Base(file)
 
-						body := fmt.Sprintf(ISSUE_BODY, filename, fmt.Sprintf(GITHUB_FILE_URL, owner, repo, branch, relativeFilePath))
-						issue, _, err := client.Issues.Create(ctx, owner, repo, &github.IssueRequest{Title: &todo, Body: &body})
+						repos := strings.Split(repo, "/")
+						repoName := repos[len(repos)-1]
+						repoNames := strings.Split(repoName, ".")
+						repoName = repoNames[0]
+
+						body := fmt.Sprintf(ISSUE_BODY, filename, fmt.Sprintf(GITHUB_FILE_URL, owner, repoName, branch, relativeFilePath))
+						issue, _, err := client.Issues.Create(ctx, owner, repoName, &github.IssueRequest{Title: &todo, Body: &body})
 						logOnError(err)
 
 						if issue != nil {
