@@ -22,7 +22,7 @@ import (
 var tokenArg = flag.String("token", "", "Github token")
 var resetArg = flag.Bool("reset", false, "reset github token")
 
-//TODO fix ugly code
+//TODO fix ugly code?
 func init() {
 	user, err := user.Current()
 	logOnError(err)

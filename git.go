@@ -103,7 +103,7 @@ func GitCommitMessageHook(dir string) {
 
 func GitDiffFiles() ([]string, error) {
 
-	cmd := exec.Command("git", "diff", "--name-only", "origin/master..HEAD")
+	cmd := exec.Command("git", "diff", "--name-only")
 	res, err := cmd.Output()
 
 	if err != nil {
