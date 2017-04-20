@@ -234,7 +234,11 @@ func work(root string, files []string) {
 					closeCount++
 					go func(i Issue) {
 						var closed string = "closed"
-						_, _, err := client.Issues.Edit(ctx, owner, repo, is.IssueNumber, &github.IssueRequest{State: &closed})
+						repos := strings.Split(repo, "/")
+						repoName := repos[len(repos)-1]
+						repoNames := strings.Split(repoName, ".")
+						repoName = repoNames[0]
+						_, _, err := client.Issues.Edit(ctx, owner, repoName, is.IssueNumber, &github.IssueRequest{State: &closed})
 						logOnError(err)
 						closeCb <- i
 					}(*is)
