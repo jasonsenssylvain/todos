@@ -1,7 +1,7 @@
 # todos
 
-### it's a very simple todos projct, but not that TODOS in your mind.
-    It's a tool that can generate issues into your github project if where is a TODO comment in your code.
+### it's a very simple todos projct.
+    a tool that can generate issues into your github project if where is a TODO comment in your code.
 
 #### Day 1:
 
