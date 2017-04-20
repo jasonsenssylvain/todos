@@ -10,8 +10,7 @@ import (
 	termutil "github.com/andrew-d/go-termutil"
 )
 
-//TODO fix ugly code?
-//
+//TODO fix ugly code
 func ReadLines(path string) ([]string, error) {
 	f, err := os.OpenFile(path, os.O_CREATE, 0660)
 	defer f.Close()

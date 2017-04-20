@@ -22,7 +22,6 @@ import (
 var tokenArg = flag.String("token", "", "Github token")
 var resetArg = flag.Bool("reset", false, "reset github token")
 
-//TODO fix ugly code?
 func init() {
 	user, err := user.Current()
 	logOnError(err)
@@ -176,6 +175,7 @@ func work(root string, files []string) {
 			issuesCount := 0
 
 			for i, line := range lines {
+				// fmt.Println(line)
 				ex := existingRegex.FindString(line)
 				todo := todoRegex.FindString(line)
 
@@ -199,6 +199,7 @@ func work(root string, files []string) {
 						repoName = repoNames[0]
 
 						body := fmt.Sprintf(ISSUE_BODY, filename, fmt.Sprintf(GITHUB_FILE_URL, owner, repoName, branch, relativeFilePath))
+						fmt.Println("try to create issue")
 						issue, _, err := client.Issues.Create(ctx, owner, repoName, &github.IssueRequest{Title: &todo, Body: &body})
 						logOnError(err)
 
