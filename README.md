@@ -1,6 +1,5 @@
 # todos
 
-### it's a very simple todos projct.
     a tool that can generate issues into your github project if where is a TODO comment in your code.
 
 ### how to use:
