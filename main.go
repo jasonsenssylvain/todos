@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"os/user"
 	"regexp"
 	"strings"
 
@@ -22,6 +23,10 @@ var tokenArg = flag.String("token", "", "Github token")
 var resetArg = flag.Bool("reset", false, "reset github token")
 
 func init() {
+	user, err := user.Current()
+	logOnError(err)
+	HOME_DIRECTORY_CONFIG = user.HomeDir
+	fmt.Println("home dir is " + HOME_DIRECTORY_CONFIG)
 	flag.Parse()
 }
 
@@ -36,6 +41,16 @@ func main() {
 			mode := flag.Args()[0]
 			if mode == "setup" {
 				setup(root)
+			} else if mode == "work" {
+				diff, err := ReadStdin()
+				if len(diff) == 0 {
+					diff, err = GitDiffFiles()
+					logOnError(err)
+				}
+				fmt.Println(diff)
+				diff = Map(func(s string) string { return path.Join(root, s) }, diff).([]string)
+				fmt.Println(diff)
+				work(root, diff)
 			}
 		}
 	}
@@ -73,13 +88,22 @@ func setup(root string) {
 		owner, _ := GitOwner()
 		repo, _ := GitRemoteUrl()
 
+		newOwner := ""
+		newRepo := ""
 		fmt.Printf("Enter the Github owner of the repo (Default: %s):\n", owner)
-		fmt.Scanln(&owner)
+		fmt.Scanln(&newOwner)
 		fmt.Printf("Enter the Github repo name (Default: %s):\n", repo)
-		fmt.Scanln(&repo)
+		fmt.Scanln(&newRepo)
 
-		localConfig.Config.Owner = owner
-		localConfig.Config.Repo = repo
+		if newOwner == "" || newOwner == "\n" {
+			newOwner = owner
+		}
+		if newRepo == "" || newRepo == "\n" {
+			newRepo = repo
+		}
+
+		localConfig.Config.Owner = newOwner
+		localConfig.Config.Repo = newRepo
 	}
 
 	err = localConfig.WriteConfiguration()
@@ -152,6 +176,7 @@ func work(root string, files []string) {
 				todo := todoRegex.FindString(line)
 
 				if ex != "" {
+					fmt.Println("Issue exists")
 					for i, is := range fileIssuesCache {
 						if is != nil && is.Hash == SHA1([]byte(ex)) {
 							cacheChanges = true

@@ -9,12 +9,13 @@ import (
 
 const (
 	TODOS_DIRECTORY        = ".todos/"
-	HOME_DIRECTORY_CONFIG  = "my home dir"
 	TODOS_CONF_FILENAME    = "conf.json"
 	ISSUE_CACHE_FILENAME   = "issues.json"
 	CLOSED_ISSUES_FILENAME = "closed.txt"
 	TOKEN_URL              = "https://github.com/settings/tokens/new?scopes=repo,public_repo"
 )
+
+var HOME_DIRECTORY_CONFIG = "~/.todos"
 
 const (
 	ISSUE_URL_REGEX = "\\[(Issue:[^\\]]*)\\]"
@@ -68,8 +69,8 @@ type IssueCacheFile struct {
 }
 
 func OpenConfiguration(dir string) *ConfFile {
-	dir = path.Join(dir, TODOS_DIRECTORY)
-
+	dir = dir + "/" + TODOS_DIRECTORY
+	fmt.Println("open configuretion from " + dir)
 	err := os.MkdirAll(dir, 0777)
 	if err != nil {
 		fmt.Println(err)
@@ -137,6 +138,7 @@ func (cache *IssueCacheFile) WriteIssueCache() error {
 	cache.File.Truncate(0)
 	cache.File.Seek(0, 0)
 
+	cache.Issues = Filter(func(i *Issue) bool { return i != nil }, cache.Issues).([]*Issue)
 	err := json.NewEncoder(cache.File).Encode(cache.Issues)
 	if err != nil {
 		fmt.Println(err)

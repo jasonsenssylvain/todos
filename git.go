@@ -13,7 +13,8 @@ func GitDirectoryRoot() (string, error) {
 	if err != nil {
 		return "", nil
 	}
-	return string(res), nil
+	dir := strings.TrimSuffix(string(res), "\n")
+	return dir, nil
 }
 
 func GitRemoteUrl() (string, error) {
@@ -22,7 +23,7 @@ func GitRemoteUrl() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	remoteUrl := "https://github.com/" + string(res) + ".git\n"
+	remoteUrl := "https://github.com/" + strings.TrimSuffix(string(res), "\n")
 	return remoteUrl, nil
 }
 
@@ -39,8 +40,11 @@ func GitOwner() (string, error) {
 }
 
 func GitAdd(add string) error {
+	fmt.Println("add path is " + add)
+	fmt.Println("ssddd")
 	cmd := exec.Command("git", "add", add)
 	_, err := cmd.Output()
+	logOnError(err)
 	return err
 }
 
@@ -97,4 +101,18 @@ func GitCommitMessageHook(dir string) {
 	if !exists {
 		lines = append(lines, script)
 	}
+}
+
+func GitDiffFiles() ([]string, error) {
+
+	cmd := exec.Command("git", "diff", "--name-only", "origin/master..HEAD")
+	res, err := cmd.Output()
+
+	if err != nil {
+		return nil, err
+	}
+
+	arr := strings.Split(string(res), "\n")
+	return arr[:len(arr)-1], nil
+
 }
