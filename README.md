@@ -5,6 +5,13 @@
 ### how to use:
     go get github.com/jasoncodingnow/todos
     in your github project: todos setup or todos work
+    
+    for example:
+    
+    //TODO: need to fix that stupid issue
+    func XXX() error {
+      YYY...
+    }
 
 #### Day 1:
 
